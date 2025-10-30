@@ -1,0 +1,117 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Tipografia */
+  --font-base: 'Fira Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+   --color-bg: #090040;
+  --color-text: #efeeee;
+  --color-primary: #471396;
+  --color-secondary: #150A70;
+  --color-accent: #FFCC00;
+  --color-border: #93d0e8;
+
+  --radius: 12px;
+  --spacing: 1rem;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --transition: all 0.25s ease-in-out;
+}
+
+body{
+  background: var(--color-bg);
+}
+/* ---------- Estilos globais para inputs, labels e selects ---------- */
+label {
+  display: block;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: 0.3rem;
+  font-size: 0.95rem;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-family: var(--font-base);
+  font-size: 1rem;
+  transition: var(--transition);
+  outline: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.3);
+}
+
+/* ---------- Botões Globais ---------- */
+button {
+  font-family: var(--font-base);
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+/* --- Botão Principal --- */
+.botao-principal {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+.botao-principal:hover {
+  background-color: #5b1fb0; /* ligeiramente mais claro para hover */
+  box-shadow: 0 0 12px rgba(177, 59, 255, 0.4);
+}
+
+/* --- Botão Secundário --- */
+.botao-secundario {
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+.botao-secundario:hover {
+  background-color: #1d0b80; /* tom mais escuro do secundário */
+  box-shadow: 0 0 8px rgba(71, 19, 150, 0.4);
+}
+
+/* --- Botão de Atenção (alerta ou ação importante) --- */
+.botao-atencao {
+  background-color: var(--color-accent);
+  color: #1a1a1a;
+}
+.botao-atencao:hover {
+  background-color: #ffdb4d;
+  box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+}
+
+/* --- Estados desabilitados --- */
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.container{
+  color: #fff;
+}
