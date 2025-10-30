@@ -1,0 +1,24 @@
+.status-conexao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  padding: 0.3rem 0;
+  transition: var(--transition);
+  background-color: transparent;
+  color: var(--color-text);
+  border-bottom: 1px solid transparent;
+}
+
+/* Estado online */
+.status-conexao.online {
+  color: #7CFC00; /* verde claro */
+  border-bottom: 1px solid rgba(124, 252, 0, 0.2);
+}
+
+/* Estado offline */
+.status-conexao.offline {
+  color: #ff7070; /* vermelho suave */
+  border-bottom: 1px solid rgba(255, 112, 112, 0.2);
+}
