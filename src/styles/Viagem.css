@@ -1,0 +1,11 @@
+.painel-botao{
+    margin: 10px;
+    display: flex;
+    justify-content: end;    
+}
+
+.painel-botao button{
+    display: flex;
+    align-items: center;  
+    box-shadow: rgba(234, 223, 15, 0.42) 0px 3px 8px;       
+}

@@ -1,6 +1,8 @@
 import React from 'react'
 import '../styles/BarraNav.css'
 import IconeMapa from '../assets/maps.png'
+import { Car } from "lucide-react"; // ícones bonitos
+
 const BarraNav = () => {
   return (
     <div className='barra-principal'>
@@ -8,7 +10,8 @@ const BarraNav = () => {
         <img src={IconeMapa} alt="" />
         </div>
         <div className='barra-titulo'>
-         <h1>KmTrack</h1>
+         
+         <h1>KmTrack <Car /></h1>
          <small>Diário de Bordo</small>
         </div>
         

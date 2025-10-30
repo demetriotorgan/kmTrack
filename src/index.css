@@ -1,4 +1,4 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -8,7 +8,7 @@
   /* Tipografia */
   --font-base: 'Fira Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
-   --color-bg: #090040;
+  --color-bg: #090040;
   --color-text: #efeeee;
   --color-primary: #471396;
   --color-secondary: #150A70;
@@ -21,15 +21,31 @@
   --transition: all 0.25s ease-in-out;
 }
 
-body{
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-base);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: var(--color-bg);
 }
-/* ---------- Estilos globais para inputs, labels e selects ---------- */
+
+/* ---------- Estilos globais ---------- */
 label {
   display: block;
   font-weight: 500;
   color: var(--color-text);
   margin-bottom: 0.3rem;
+  margin-top: 1rem;
   font-size: 0.95rem;
 }
 
@@ -81,7 +97,7 @@ button {
   color: #fff;
 }
 .botao-principal:hover {
-  background-color: #5b1fb0; /* ligeiramente mais claro para hover */
+  background-color: #5b1fb0;
   box-shadow: 0 0 12px rgba(177, 59, 255, 0.4);
 }
 
@@ -92,11 +108,11 @@ button {
   border: 1px solid var(--color-border);
 }
 .botao-secundario:hover {
-  background-color: #1d0b80; /* tom mais escuro do secundário */
+  background-color: #1d0b80;
   box-shadow: 0 0 8px rgba(71, 19, 150, 0.4);
 }
 
-/* --- Botão de Atenção (alerta ou ação importante) --- */
+/* --- Botão de Atenção --- */
 .botao-atencao {
   background-color: var(--color-accent);
   color: #1a1a1a;
@@ -112,6 +128,99 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* ---------- Inputs do tipo Date ---------- */
+input[type="date"] {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-family: var(--font-base);
+  font-size: 1rem;
+  transition: var(--transition);
+  outline: none;
+  appearance: none; /* remove o estilo padrão */
+  -webkit-appearance: none;
+  position: relative;
+}
+
+/* Ícone do calendário (personalização leve) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+  border-radius: 4px;
+  padding: 4px;
+  cursor: pointer;
+  filter: brightness(0.9);
+  transition: var(--transition);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  filter: brightness(1.1);
+}
+
+/* Cor do texto da data */
+input[type="date"]::-webkit-datetime-edit {
+  color: var(--color-text);
+}
+
+/* Cor do placeholder quando nenhum valor está selecionado */
+input[type="date"]::-webkit-datetime-edit-text,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Foco */
+input[type="date"]:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.3);
+}
+
+
+/* --- Container --- */
 .container{
   color: #fff;
+  margin: 5%;
+  padding: 1rem;
+  background: var(--color-secondary);
+  box-shadow: rgba(201, 189, 189, 0.229) 0px 3px 8px;
+  border-radius: 20px;
+}
+
+/* 🖥️ Estilo Desktop: simula tela mobile */
+@media (min-width: 768px) {
+  body {    
+    display: flex;
+    justify-content: center;
+    align-items: center; /* CENTRALIZA totalmente */
+    background: #000; /* fundo do "desktop" */
+    padding: 0; /* remove o padding que criava a barra */
+    height: 100vh; /* garante altura total */
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  #root {
+    width: 390px; /* largura típica de celular */
+    height: 100%;
+    border-radius: 24px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+    background: var(--color-bg);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; 
+    overflow-x: hidden;
+  }
+  /* rolagem suave e elegante dentro do "celular" */
+  #root::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  #root::-webkit-scrollbar-thumb {
+    background: var(--color-secondary);
+    border-radius: 3px;
+  }
 }
