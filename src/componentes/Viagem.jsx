@@ -1,59 +1,10 @@
 import React, { useState } from 'react'
 import '../styles/Viagem.css'
 import { Map, Save } from "lucide-react";
-import api from '../api/api'
+import { useViagem } from '../hooks/useSalvarViagem';
 
-
-const Viagem = () => {
-  const [viagem, setViagem] = useState({
-    nome:'',
-    origem:'',
-    destino:'',
-    distanciaObjetivo:'',
-    dataInicio:'',
-    dataFim:'',
-    status:'planejada',
-    notasGerais:''
-  });
-  
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setViagem((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault();    
-    //console.log(viagem); 
-
-    const confirmar = window.confirm('Deseja realmente salvar esta viagem?');
-    if(!confirmar){
-      alert("🚫 Operação cancelada.");
-      return;
-    }
-    try {
-      const response = await api.post('/salvar-viagem', viagem);
-      alert('✅ Viagem cadastrada com sucesso!');
-      console.log('Dados Enviados: ', response.data);
-      setViagem({
-      nome: '',
-      origem: '',
-      destino: '',
-      distanciaObjetivo: '',
-      dataInicio: '',
-      dataFim: '',
-      status: 'planejada',
-      notasGerais: ''
-    });
-
-    } catch (error) {
-      console.error(error);
-      alert('❌ Erro ao cadastrar viagem.');
-    }
-  };
-
+const Viagem = () => {  
+ const { viagem, handleChange, handleSubmit, salvando } = useViagem();
 
   return (
     <div className='container'>
@@ -140,6 +91,12 @@ const Viagem = () => {
         </div>
       </form>
       </div>
+  {salvando && (
+  <div className="modal-loading">
+    <div className="loader"></div>
+    <p>Salvando viagem...</p>
+  </div>
+)}
     </div>
   )
 }
