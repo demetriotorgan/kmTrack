@@ -4,20 +4,11 @@ import { Map, Save } from "lucide-react";
 import { useViagem } from '../hooks/useSalvarViagem';
 import CardViagem from './CardViagem';
 import api from '../api/api';
+import { useCarregarViagem } from '../hooks/useCarregarViagem';
 
 const Viagem = () => {  
  const { viagem, handleChange, handleSubmit, salvando } = useViagem();
- const [viagens, setViagens] = useState([]);
-
- const carregarViagens = async()=>{
-  const response = await api.get('/listar-viagens');
-  console.log(response.data);
-  setViagens(response.data);
- }
-
- useEffect(()=>{
-  carregarViagens();
- },[])
+  const { viagens, carregando, erro, recarregar } = useCarregarViagem();
 
   return (
     <>
@@ -112,16 +103,18 @@ const Viagem = () => {
   </div>
 )}
     </div>
-    <div className='container'>
-
-      {viagens ? viagens.map((item, index)=>(
-        <CardViagem 
-        key={index}
-        viagemCadastrada={item}
-        />
-      )): ('Sem viagens cadastradas')}
-        
-    </div>
+    {/* 🔹 Listagem de viagens */}
+      <div className='container'>
+        {carregando && <p>Carregando viagens...</p>}
+        {erro && <p style={{ color: 'red' }}>{erro}</p>}
+        {!carregando && !erro && (
+          viagens.length > 0
+            ? viagens.map((item, index) => (
+                <CardViagem key={index} viagemCadastrada={item} />
+              ))
+            : <p>Sem viagens cadastradas</p>
+        )}
+      </div>
     </>
   )
 }
