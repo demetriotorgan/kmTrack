@@ -191,6 +191,14 @@ input[type="date"]:focus {
   border-radius: 20px;
 }
 
+/* --- Card --- */
+.card{
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
 /* 🖥️ Estilo Desktop: simula tela mobile */
 @media (min-width: 768px) {
   body {    

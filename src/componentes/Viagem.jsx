@@ -1,12 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import '../styles/Viagem.css'
 import { Map, Save } from "lucide-react";
 import { useViagem } from '../hooks/useSalvarViagem';
+import CardViagem from './CardViagem';
+import api from '../api/api';
 
 const Viagem = () => {  
  const { viagem, handleChange, handleSubmit, salvando } = useViagem();
+ const [viagens, setViagens] = useState([]);
+
+ const carregarViagens = async()=>{
+  const response = await api.get('/listar-viagens');
+  console.log(response.data);
+  setViagens(response.data);
+ }
+
+ useEffect(()=>{
+  carregarViagens();
+ },[])
 
   return (
+    <>
     <div className='container'>
       <div className='painel-form-cadastro'>
         <form onSubmit={handleSubmit}>
@@ -98,6 +112,17 @@ const Viagem = () => {
   </div>
 )}
     </div>
+    <div className='container'>
+
+      {viagens ? viagens.map((item, index)=>(
+        <CardViagem 
+        key={index}
+        viagemCadastrada={item}
+        />
+      )): ('Sem viagens cadastradas')}
+        
+    </div>
+    </>
   )
 }
 
