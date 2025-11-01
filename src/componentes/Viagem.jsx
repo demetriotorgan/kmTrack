@@ -6,9 +6,9 @@ import CardViagem from './CardViagem';
 import api from '../api/api';
 import { useCarregarViagem } from '../hooks/useCarregarViagem';
 
-const Viagem = () => {  
- const { viagem, handleChange, handleSubmit, salvando } = useViagem();
-  const { viagens, carregando, erro, recarregar } = useCarregarViagem();
+const Viagem = () => {
+  const { viagens, carregando, erro, recarregar } = useCarregarViagem();  
+ const { viagem, handleChange, handleSubmit, salvando } = useViagem({recarregar});
 
   return (
     <>

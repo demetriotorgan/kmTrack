@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import api from '../api/api';
 
-export const useViagem = () => {
+export const useViagem = ({recarregar}) => {
   const viagemInicial = {
     nome: '',
     origem: '',
@@ -58,6 +58,9 @@ export const useViagem = () => {
       const response = await api.post('/salvar-viagem', viagem);
       alert('✅ Viagem cadastrada com sucesso!');
       console.log('Dados enviados:', response.data);
+      
+      //Atualiza lista de viagens com novo registro salvo
+      await recarregar();
 
       // 🔹 Reseta o formulário
       setViagem(viagemInicial);
