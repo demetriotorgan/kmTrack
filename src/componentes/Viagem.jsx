@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import '../styles/Viagem.css'
 import { Map, Save } from "lucide-react";
 import { useViagem } from '../hooks/useSalvarViagem';
@@ -7,13 +7,14 @@ import api from '../api/api';
 import { useCarregarViagem } from '../hooks/useCarregarViagem';
 
 const Viagem = () => {
-  const { viagens, carregando, erro, recarregar } = useCarregarViagem();  
- const { viagem, handleChange, handleSubmit, salvando } = useViagem({recarregar});
+ const formRef = useRef(null);
+ const { viagens, carregando, erro, recarregar } = useCarregarViagem();  
+ const { viagem, setViagem, handleChange, handleSubmit, salvando } = useViagem({recarregar});
 
   return (
     <>
     <div className='container'>
-      <div className='painel-form-cadastro'>
+      <div className='painel-form-cadastro' ref={formRef}>
         <form onSubmit={handleSubmit}>
         <h3><Map /> Cadastrar Viagem</h3>
         <small>Informe os dados da viagem</small>
@@ -110,7 +111,13 @@ const Viagem = () => {
         {!carregando && !erro && (
           viagens.length > 0
             ? viagens.map((item, index) => (
-                <CardViagem key={index} viagemCadastrada={item} />
+                <CardViagem 
+                  key={index} 
+                  viagemCadastrada={item} 
+                  setViagem={setViagem}
+                  recarregar={recarregar}
+                  formRef={formRef}
+                  />
               ))
             : <p>Sem viagens cadastradas</p>
         )}

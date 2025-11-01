@@ -55,15 +55,23 @@ export const useViagem = ({recarregar}) => {
 
     try {
       setSalvando(true);
+      
+      if(viagem._id){
+       const response = await api.put(`/editar-viagem/${viagem._id}`, viagem);
+        alert('✏️ Viagem atualizada com sucesso!')
+        console.log('Dados Atualziados', response.data);
+      }else{
       const response = await api.post('/salvar-viagem', viagem);
       alert('✅ Viagem cadastrada com sucesso!');
-      console.log('Dados enviados:', response.data);
+      console.log('Dados enviados:', response.data);  
+      }    
       
       //Atualiza lista de viagens com novo registro salvo
       await recarregar();
 
       // 🔹 Reseta o formulário
       setViagem(viagemInicial);
+
     } catch (error) {
       console.error(error);
       alert('❌ Erro ao cadastrar viagem.');
@@ -74,6 +82,7 @@ export const useViagem = ({recarregar}) => {
 
   return {
     viagem,
+    setViagem,
     handleChange,
     handleSubmit,
     salvando
