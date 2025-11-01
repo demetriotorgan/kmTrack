@@ -1,9 +1,10 @@
 import React from 'react'
 import '../styles/CardViagem.css'
 import { MapPinPlus, MapPinPen, MapPinXInside } from "lucide-react";
+import api from '../api/api';
 
 
-const CardViagem = ({viagemCadastrada, setViagem, recarregar,formRef}) => {
+const CardViagem = ({viagemCadastrada, setViagem, recarregar}) => {
   // 🔹 Função de edição: carrega os dados no formulário do pai
   const handleEditar = () => {
     // Converte datas ISO → formato yyyy-MM-dd (para o input type=date)
