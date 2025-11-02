@@ -1,71 +1,13 @@
 import React, { useState } from 'react'
 import { CalendarArrowUp, Save } from "lucide-react";
-import axios from 'axios';
+import { useTrecho } from '../hooks/useTrecho';
 import { useCarregarViagem } from '../hooks/useCarregarViagem';
+import ModalSalvando from './ModalSalvando';
 
 
 const Trecho = () => {  
-  const trechoInicial = {
-    viagemId: '',
-    origem: '',
-    destino: '',
-    distancia: '',
-    odometro: ''
-  }
-  const [salvando, setSalvando]= useState(false);
-  const [trecho, setTrecho] = useState(trechoInicial);
-
-  //hooks
-  const {viagens} = useCarregarViagem();
-
-    // 🔹 Função genérica de input
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setTrecho((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const validarCampos = ()=>{
-      const obrigatorios = ['origem', 'destino', 'distancia'];
-      for(let campo of obrigatorios){
-        if(!trecho[campo] || trecho[campo].toString().trim() === ''){
-          return `O campo "${campo}" é obrigatório.`;
-        }
-      }
-      return null;
-    };
-   
-  // 🔹 Enviar para o backend
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    //Validação
-    const erroValidacao = validarCampos();
-    if(erroValidacao){
-      alert(`❌ ${erroValidacao}`);
-      return;
-    }
-    
-    const confirmar = window.confirm('Deseja realmente salvar o novo Trecho?');
-    if(!confirmar){
-      alert('🚫 Operação cancelada.');
-      return;
-    }
-    try {
-      setSalvando(true);
-      console.log('Trecho salvo:', trecho);
-      const response = await axios.post('https://api-km-track.vercel.app/salvar-trecho', trecho);
-      console.log(response.data);
-      setTrecho(trechoInicial);
-      alert('✅ Trecho salvo com sucesso!')
-       
-    } catch (error) {
-      console.log('Erro ao salvar novo Trecho: ', error);
-      alert('❌ Erro ao cadastrar viagem.');
-    }finally{
-      setSalvando(false);
-    }
-  };
-
+ const { trecho, salvando, handleChange, handleSubmit } = useTrecho();  
+const { viagens } = useCarregarViagem();
   return (
     <div className='container'>
       <div className='painel-form-cadastro'>
@@ -126,10 +68,7 @@ const Trecho = () => {
         </form>
       </div>
       {salvando && (
-  <div className="modal-loading">
-    <div className="loader"></div>
-    <p>Salvando viagem...</p>
-  </div>
+        <ModalSalvando />
 )}
     </div>
   )

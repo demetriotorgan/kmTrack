@@ -5,6 +5,7 @@ import { useViagem } from '../hooks/useSalvarViagem';
 import CardViagem from './CardViagem';
 import api from '../api/api';
 import { useCarregarViagem } from '../hooks/useCarregarViagem';
+import ModalSalvando from './ModalSalvando';
 
 const Viagem = () => { 
  const { viagens, carregando, erro, recarregar } = useCarregarViagem();  
@@ -97,10 +98,7 @@ const Viagem = () => {
       </form>
       </div>
   {salvando && (
-  <div className="modal-loading">
-    <div className="loader"></div>
-    <p>Salvando viagem...</p>
-  </div>
+  <ModalSalvando />
 )}
     </div>
     {/* 🔹 Listagem de viagens */}
