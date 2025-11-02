@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import api from '../api/api';
 
 export const useTrecho = () => {
   const trechoInicial = {
@@ -48,10 +49,7 @@ export const useTrecho = () => {
 
     try {
       setSalvando(true);
-      const response = await axios.post(
-        'https://api-km-track.vercel.app/salvar-trecho',
-        trecho
-      );
+      const response = await api.post('/salvar-trecho', trecho);
       console.log(response.data);
       setTrecho(trechoInicial);
       alert('✅ Trecho salvo com sucesso!');

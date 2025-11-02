@@ -1,14 +1,29 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CalendarArrowUp, Save } from "lucide-react";
 import { useTrecho } from '../hooks/useTrecho';
 import { useCarregarViagem } from '../hooks/useCarregarViagem';
 import ModalSalvando from './ModalSalvando';
+import api from '../api/api';
+import CardTrecho from './CardTrecho';
 
 
 const Trecho = () => {  
- const { trecho, salvando, handleChange, handleSubmit } = useTrecho();  
+const { trecho, salvando, handleChange, handleSubmit } = useTrecho();  
 const { viagens } = useCarregarViagem();
+const [trechos, setTrechos] = useState([]);
+
+const listarTrechos = async()=>{
+  const listaDeTrechos = await api.get('/viagens-com-trechos');
+  console.log(listaDeTrechos.data);
+  setTrechos(listaDeTrechos.data);
+}
+
+  useEffect(()=>{
+    listarTrechos();
+  },[]);
+
   return (
+    <>
     <div className='container'>
       <div className='painel-form-cadastro'>
         <form onSubmit={handleSubmit}>
@@ -66,11 +81,18 @@ const { viagens } = useCarregarViagem();
           <button type='submit' className='botao-principal'><Save /> Salvar</button>              
           </div>
         </form>
-      </div>
+      </div>      
       {salvando && (
         <ModalSalvando />
 )}
     </div>
+    {trechos.map((trecho, index)=>(
+      <CardTrecho
+        key={index}
+        trecho={trecho}
+      />
+    ))}    
+    </>
   )
 }
 
