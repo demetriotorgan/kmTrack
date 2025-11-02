@@ -53,10 +53,11 @@ const Trecho = () => {
     try {
       setSalvando(true);
       console.log('Trecho salvo:', trecho);
-      const response = await axios.post('http://localhost:5000/salvar-trecho', trecho);
+      const response = await axios.post('https://api-km-track.vercel.app/salvar-trecho', trecho);
       console.log(response.data);
-       alert('✅ Trecho salvo com sucesso!')
-       setTrecho(trechoInicial)
+      setTrecho(trechoInicial);
+      alert('✅ Trecho salvo com sucesso!')
+       
     } catch (error) {
       console.log('Erro ao salvar novo Trecho: ', error);
       alert('❌ Erro ao cadastrar viagem.');
@@ -88,6 +89,7 @@ const Trecho = () => {
             <input 
               type='text'
               name='origem' 
+              value={trecho.origem}
               onChange={handleChange} 
             />
           </label>
@@ -96,6 +98,7 @@ const Trecho = () => {
             <input 
               type='text'
               name='destino' 
+              value={trecho.destino}
               onChange={handleChange} 
             /> 
           </label>
@@ -104,6 +107,7 @@ const Trecho = () => {
             <input 
               type='number'
               name='distancia'
+              value={trecho.distancia}
               onChange={handleChange}
             />
           </label>
@@ -112,6 +116,7 @@ const Trecho = () => {
             <input 
             type='number'
             name='odometro'
+            value={trecho.odometro}
             onChange={handleChange}
             />
           </label>
