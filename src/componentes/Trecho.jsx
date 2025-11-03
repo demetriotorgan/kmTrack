@@ -11,11 +11,32 @@ const Trecho = () => {
 const { trecho, salvando, handleChange, handleSubmit,iniciarEdicao, editando } = useTrecho();  
 const { viagens } = useCarregarViagem();
 const [trechos, setTrechos] = useState([]);
+const [deletando, setDeletando]=useState(false);
 
 
 const listarTrechos = async()=>{
   const listaDeTrechos = await api.get('/viagens-com-trechos');  
   setTrechos(listaDeTrechos.data);
+}
+
+const deletarTrecho = async(id)=>{  
+  const confirmar = window.confirm('Realmente deseja excluir esse trecho?');
+
+  if(!confirmar){
+    alert('Operação cancelada')
+    return;
+  }
+  try {
+    setDeletando(true);
+  const response = await api.delete(`/deletar-trecho/${id}`)
+  console.log(response.data);
+  listarTrechos();
+  alert('Trecho excluido com sucesso');  
+  } catch (error) {
+    console.error('Erro ao excluir trecho', error);
+  }finally{
+    setDeletando(false);
+  }  
 }
 
   useEffect(()=>{
@@ -81,7 +102,7 @@ const listarTrechos = async()=>{
           </div>
         </form>
       </div>      
-      {salvando && (
+      {salvando || deletando && (
         <ModalSalvando />
 )}
     </div>
@@ -93,6 +114,7 @@ const listarTrechos = async()=>{
         key={index}
         trecho={trecho}
         onEditarTrecho={iniciarEdicao}
+        deletarTrecho={deletarTrecho}
       />
     ))}    
     </>

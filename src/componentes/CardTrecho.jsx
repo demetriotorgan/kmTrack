@@ -1,9 +1,9 @@
 import React from 'react'
-import { ArrowRightLeft,Pencil} from "lucide-react";
+import { ArrowRightLeft,Pencil,MapPinXInside} from "lucide-react";
 import '../styles/CardTrecho.css'
 
 
-const CardTrecho = ({trecho, onEditarTrecho}) => {
+const CardTrecho = ({trecho, onEditarTrecho, deletarTrecho}) => {
   return (
     <div className='container'>        
     <div className="card-trecho">
@@ -16,11 +16,19 @@ const CardTrecho = ({trecho, onEditarTrecho}) => {
     <p className="titulo-secao">Trechos:</p>
     {trecho.trechos.map((item, index) => (
       <div className="linha-trecho" key={index}>
-        <span className="cidade">{item.origem}</span>
-        <span className="icone"><ArrowRightLeft size={18} /></span>
-        <span className="cidade">{item.destino}</span>
-        <button onClick={()=>onEditarTrecho(item)}><Pencil /></button>
-      </div>
+  <span className="cidade">{item.origem}</span>
+  <span className="icone"><ArrowRightLeft size={18} /></span>
+  <span className="cidade">{item.destino}</span>
+
+  <div className="botoes-acoes">
+    <button onClick={() => onEditarTrecho(item)}>
+      <Pencil />
+    </button>
+    <button className="excluir" onClick={() => deletarTrecho(item._id)}>
+      <MapPinXInside />
+    </button>
+  </div>
+</div>
     ))}
   </div>
 </div>
