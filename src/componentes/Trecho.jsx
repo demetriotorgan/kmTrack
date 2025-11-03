@@ -8,26 +8,26 @@ import CardTrecho from './CardTrecho';
 
 
 const Trecho = () => {  
-const { trecho, salvando, handleChange, handleSubmit } = useTrecho();  
+const { trecho, salvando, handleChange, handleSubmit,iniciarEdicao, editando } = useTrecho();  
 const { viagens } = useCarregarViagem();
 const [trechos, setTrechos] = useState([]);
 
+
 const listarTrechos = async()=>{
-  const listaDeTrechos = await api.get('/viagens-com-trechos');
-  console.log(listaDeTrechos.data);
+  const listaDeTrechos = await api.get('/viagens-com-trechos');  
   setTrechos(listaDeTrechos.data);
 }
 
   useEffect(()=>{
     listarTrechos();
-  },[]);
+  },[]);  
 
   return (
     <>
     <div className='container'>
       <div className='painel-form-cadastro'>
-        <form onSubmit={handleSubmit}>
-          <h3><CalendarArrowUp /> Cadastrar Novo Trecho</h3>          
+        <form onSubmit={(e)=>handleSubmit(e,listarTrechos)}>
+          <h3><CalendarArrowUp /> {editando ? "Editar Trecho" : "Cadastrar Novo Trecho"}</h3>          
           <label>
             Novo Trecho de:
             <select 
@@ -37,8 +37,7 @@ const listarTrechos = async()=>{
               <option>Selecione uma Viagem</option>
               {viagens.map((viagem, index)=>(
                 <option key={index} value={viagem._id}>{viagem.nome}</option>
-              ))}
-              
+              ))}              
             </select>
           </label>
           <label>
@@ -63,8 +62,8 @@ const listarTrechos = async()=>{
             Disância a Percorrer
             <input 
               type='number'
-              name='distancia'
-              value={trecho.distancia}
+              name='distanciaPercorrida'
+              value={trecho.distanciaPercorrida}
               onChange={handleChange}
             />
           </label>
@@ -78,7 +77,7 @@ const listarTrechos = async()=>{
             />
           </label>
           <div className='painel-botao'>
-          <button type='submit' className='botao-principal'><Save /> Salvar</button>              
+          <button type='submit' className='botao-principal'><Save />{editando ? "Atualizar" : "Salvar"}</button>              
           </div>
         </form>
       </div>      
@@ -86,10 +85,14 @@ const listarTrechos = async()=>{
         <ModalSalvando />
 )}
     </div>
+    <div className='container'>
+      <h2>Trechos Cadastrados</h2>
+    </div>    
     {trechos.map((trecho, index)=>(
       <CardTrecho
         key={index}
         trecho={trecho}
+        onEditarTrecho={iniciarEdicao}
       />
     ))}    
     </>

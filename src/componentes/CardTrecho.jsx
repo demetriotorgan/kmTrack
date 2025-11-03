@@ -1,19 +1,30 @@
 import React from 'react'
-import { ArrowRightLeft} from "lucide-react";
+import { ArrowRightLeft,Pencil} from "lucide-react";
+import '../styles/CardTrecho.css'
 
 
-const CardTrecho = ({trecho}) => {
+const CardTrecho = ({trecho, onEditarTrecho}) => {
   return (
-    <div className='container'>
-        <h3>Trechos Cadastrados</h3>
-        <div className='card'>
-            <p>Viagem: {trecho.nome} </p>
-            <p>Trechos: </p>
-            {trecho.trechos.map((item, index)=>(
-                <p key={index}>{item.origem} <ArrowRightLeft /> {item.destino}</p>
-            ))}
-            
-        </div>
+    <div className='container'>        
+    <div className="card-trecho">
+  <div className="cabecalho-trecho">
+    <h3>{trecho.nome}</h3>
+    <p className="titulo-viagem">Viagem Selecionada</p>
+  </div>
+
+  <div className="lista-trechos">
+    <p className="titulo-secao">Trechos:</p>
+    {trecho.trechos.map((item, index) => (
+      <div className="linha-trecho" key={index}>
+        <span className="cidade">{item.origem}</span>
+        <span className="icone"><ArrowRightLeft size={18} /></span>
+        <span className="cidade">{item.destino}</span>
+        <button onClick={()=>onEditarTrecho(item)}><Pencil /></button>
+      </div>
+    ))}
+  </div>
+</div>
+
     </div>
   )
 }

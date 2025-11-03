@@ -7,12 +7,14 @@ export const useTrecho = () => {
     viagemId: '',
     origem: '',
     destino: '',
-    distancia: '',
+    distanciaPercorrida: '',
     odometro: ''
   };
 
   const [trecho, setTrecho] = useState(trechoInicial);
   const [salvando, setSalvando] = useState(false);
+   const [editando, setEditando] = useState(false);
+
 
   // 🔹 Atualizar campos
   const handleChange = (e) => {
@@ -22,7 +24,7 @@ export const useTrecho = () => {
 
   // 🔹 Validação simples
   const validarCampos = () => {
-    const obrigatorios = ['origem', 'destino', 'distancia'];
+    const obrigatorios = ['origem', 'destino', 'distanciaPercorrida'];
     for (let campo of obrigatorios) {
       if (!trecho[campo] || trecho[campo].toString().trim() === '') {
         return `O campo "${campo}" é obrigatório.`;
@@ -31,13 +33,32 @@ export const useTrecho = () => {
     return null;
   };
 
+   // 🔹 Entrar no modo de edição (usado pelo componente pai)
+  const iniciarEdicao = (trechoSelecionado) => {
+    setTrecho({
+      _id: trechoSelecionado._id,
+      viagemId: trechoSelecionado.viagemId,
+      origem: trechoSelecionado.origem,
+      destino: trechoSelecionado.destino,
+      distanciaPercorrida: trechoSelecionado.distanciaPercorrida,
+      odometro: trechoSelecionado.odometro
+    });
+    setEditando(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // 🔹 Envio ao backend
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, callbackPosSalvar) => {
     e.preventDefault();
 
     const erroValidacao = validarCampos();
     if (erroValidacao) {
       alert(`❌ ${erroValidacao}`);
+      return;
+    }
+
+     if (!trecho.viagemId) {
+      alert("❌ Selecione uma viagem.");
       return;
     }
 
@@ -48,11 +69,23 @@ export const useTrecho = () => {
     }
 
     try {
-      setSalvando(true);
-      const response = await api.post('/salvar-trecho', trecho);
-      console.log(response.data);
-      setTrecho(trechoInicial);
-      alert('✅ Trecho salvo com sucesso!');
+      setSalvando(true);    
+      if(editando && trecho._id){
+        // 🔸 Atualização
+        const response = await api.put(`/atualizar-trecho/${trecho._id}`, trecho);
+        alert('✏️ Trecho atualizado com sucesso!');
+        console.log('Trecho atualizado:', response.data);
+      }else{
+        const response = await api.post('/salvar-trecho', trecho);
+        console.log(response.data);       
+        alert('✅ Trecho salvo com sucesso!');
+      }
+       setTrecho(trechoInicial);
+       setEditando(false);
+
+       // 🔹 Atualizar lista no componente pai (callback opcional)
+      if (callbackPosSalvar) callbackPosSalvar();
+      
     } catch (error) {
       console.log('Erro ao salvar novo Trecho: ', error);
       alert('❌ Erro ao cadastrar trecho.');
@@ -63,8 +96,11 @@ export const useTrecho = () => {
 
   return {
     trecho,
+    setTrecho,
     salvando,
+    editando,
     handleChange,
-    handleSubmit
+    handleSubmit,
+    iniciarEdicao
   };
 };
