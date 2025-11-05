@@ -1,6 +1,7 @@
 import React from 'react'
 
-const CardInfoParada = () => {
+const CardInfoParada = ({trechoSelecionado}) => {
+  if(!trechoSelecionado) return null;
   return (
     <div className='card-info-parada'>
           <h3>Registrar Parada</h3>

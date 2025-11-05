@@ -1,12 +1,13 @@
 import React from 'react'
 
-const CardInfoViagem = () => {
+const CardInfoViagem = ({viagemSelecionada}) => {
+  if(!viagemSelecionada) return null;
   return (
     <div className='card-info-viagem'>
-          <p>Viagem:</p>
-          <p>Destino: </p>
-          <p>Origem: </p>
-          <p>Total de KM: </p>          
+          <p>Viagem: {viagemSelecionada.nome || '' }</p>
+          <p>Destino: {viagemSelecionada.destino || '' } </p>
+          <p>Origem: {viagemSelecionada.origem || ''} </p>
+          <p>Total de KM: {viagemSelecionada.distanciaObjetivo || '' } </p>          
     </div>
   )
 }

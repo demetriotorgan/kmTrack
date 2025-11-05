@@ -157,6 +157,12 @@ option {
   color: var(--color-text);
 }
 
+.distancia-objetivo{
+  text-align: center;
+  border: 1px solid var(--color-accent);
+  padding: 5px;
+  border-radius: 10px;
+}
 
 /* ===== Responsividade ===== */
 @media (max-width: 600px) {
