@@ -84,7 +84,10 @@ const handleTrechoChange = (e) => {
       trechoSelecionado={trechoSelecionado} 
       carregarViagemTrecho={carregarViagemTrecho}
       />
-      <CardInfoParada trechoSelecionado={trechoSelecionado} />
+      <CardInfoParada 
+        trechoSelecionado={trechoSelecionado} 
+        carregarViagemTrecho={carregarViagemTrecho}
+        />
     </>
   )
 }

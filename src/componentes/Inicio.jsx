@@ -4,7 +4,7 @@ import CardDadosInicio from './CardDadosInicio'
 import api from '../api/api'
 
 const Inicio = () => {
-  const [viagensTrechos, setViagensTrecho] = useState([]);
+  const [viagensTrechos, setViagensTrecho] = useState([]);  
 
   const carregarViagemTrecho = async()=>{
     const response = await api.get('/viagens-com-trechos');
