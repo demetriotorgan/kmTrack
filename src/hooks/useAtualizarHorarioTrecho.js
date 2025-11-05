@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../api/api";
 
-const useAtualizarHorarioTrecho = (tipo, hora, setTipo,setHora)=>{
+const useAtualizarHorarioTrecho = (tipo, hora, setTipo,setHora,carregarViagemTrecho)=>{
     const [salvando, setSalvando] = useState(false);
 
 const payload = (tipo, hora) => {
@@ -24,8 +24,9 @@ const payload = (tipo, hora) => {
       setSalvando(true);
       const response = await api.put(`/atualizar-tempo/${id}`, payload(tipo, hora));
       alert('Horário registrado com sucesso');
-      setTipo('Inicio');
+      setTipo('inicio');
       setHora('');
+      carregarViagemTrecho();
     } catch (error) {
       console.log(error);
     }finally{

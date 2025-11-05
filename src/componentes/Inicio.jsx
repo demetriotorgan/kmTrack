@@ -19,7 +19,10 @@ const Inicio = () => {
   return (
     <div className='container'>      
       <div className='card'>
-        <CardDadosInicio viagensTrechos={viagensTrechos} />        
+        <CardDadosInicio 
+        viagensTrechos={viagensTrechos}
+        carregarViagemTrecho={carregarViagemTrecho}
+        />        
       </div>
     </div>   
   )

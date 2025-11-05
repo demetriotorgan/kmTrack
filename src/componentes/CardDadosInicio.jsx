@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import CardInfoViagem from './CardInfoViagem'
 import CardInfoTrecho from './CardInfoTrecho'
 import CardInfoParada from './CardInfoParada'
 
-const CardDadosInicio = ({ viagensTrechos }) => {
+const CardDadosInicio = ({ viagensTrechos,carregarViagemTrecho }) => {
   const [viagemSelecionada, setViagemSelecionada] = useState(null)
   const [trechoSelecionado, setTrechoSelecionado] = useState(null)
 
@@ -24,6 +24,18 @@ const handleTrechoChange = (e) => {
   setTrechoSelecionado(trecho ? { ...trecho } : null)
 }
 
+ // 🔥 useEffect para manter trechoSelecionado atualizado quando viagensTrechos mudar
+  useEffect(() => {
+    if (!trechoSelecionado || !viagemSelecionada) return;
+
+    const viagemAtualizada = viagensTrechos.find(v => v._id === viagemSelecionada._id);
+    if (!viagemAtualizada) return;
+
+    const trechoAtualizado = viagemAtualizada.trechos.find(t => t._id === trechoSelecionado._id);
+    if (trechoAtualizado) {
+      setTrechoSelecionado({ ...trechoAtualizado });
+    }
+  }, [viagensTrechos]);
   return (
     <>
       <h3>Viagens Cadastradas</h3>
@@ -68,7 +80,10 @@ const handleTrechoChange = (e) => {
 
       {/* ---------- INFORMAÇÕES ---------- */}
       <CardInfoViagem viagemSelecionada={viagemSelecionada} />
-      <CardInfoTrecho trechoSelecionado={trechoSelecionado} />
+      <CardInfoTrecho 
+      trechoSelecionado={trechoSelecionado} 
+      carregarViagemTrecho={carregarViagemTrecho}
+      />
       <CardInfoParada trechoSelecionado={trechoSelecionado} />
     </>
   )
