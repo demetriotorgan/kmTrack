@@ -7,10 +7,12 @@ const Menu = () => {
     const navigate = useNavigate();
 
     const menuItems = [
-        {icon: <Car size={40} />, label:'Início', path:'/'},
         {icon: <Map size={40} />, label:'Viagem', path:'/viagem'},
         {icon: <MapPinCheckInside  size={40} />, label:'Trecho', path:'/trecho'},
-        {icon: <ChartNoAxesCombined  size={40} />, label:'Estatísticas', path:'/estatisticas'},
+        {icon: <Car size={40} />, label:'Paradas', path:'/'},                
+        {icon: <ChartNoAxesCombined  size={40} />, label:'Abastecimentos', path:'/estatisticas'},
+        {icon: <ChartNoAxesCombined  size={40} />, label:'Pedagios', path:'/estatisticas'},
+        {icon: <ChartNoAxesCombined  size={40} />, label:'Imprevistos', path:'/estatisticas'},
     ];
 
   return (

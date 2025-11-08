@@ -3,6 +3,7 @@ import '../styles/Inicio.css'
 import CardDadosInicio from './CardDadosInicio'
 import api from '../api/api'
 
+
 const Inicio = () => {
   const [viagensTrechos, setViagensTrecho] = useState([]);  
   const [carregando, setCarregando] = useState(false);
@@ -26,6 +27,7 @@ const Inicio = () => {
   },[]);
 
   return (
+    <>
     <div className='container'>      
       <div className='card'>
         <CardDadosInicio 
@@ -34,7 +36,8 @@ const Inicio = () => {
         carregando={carregando}
         />        
       </div>
-    </div>   
+    </div>       
+    </>
   )
 }
 

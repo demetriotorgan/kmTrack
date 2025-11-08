@@ -3,6 +3,7 @@ import CardInfoViagem from './CardInfoViagem'
 import CardInfoTrecho from './CardInfoTrecho'
 import CardInfoParada from './CardInfoParada'
 import ModalSalvando from './ModalSalvando'
+import CardInfoAbastecimento from './CardInfoAbastecimento'
 
 const CardDadosInicio = ({ viagensTrechos,carregarViagemTrecho, carregando }) => {
   const [viagemSelecionada, setViagemSelecionada] = useState(null)
@@ -98,7 +99,7 @@ const handleTrechoChange = (e) => {
       <CardInfoParada 
         trechoSelecionado={trechoSelecionado} 
         carregarViagemTrecho={carregarViagemTrecho}
-        />
+      />       
     </>
   )
 }
