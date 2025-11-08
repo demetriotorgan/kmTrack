@@ -2,30 +2,12 @@ import React, { useEffect, useState } from 'react'
 import '../styles/Inicio.css'
 import CardDadosInicio from './CardDadosInicio'
 import api from '../api/api'
+import useViagensTrechos from '../hooks/useViagemTrechos'
 
 
-const Inicio = () => {
-  const [viagensTrechos, setViagensTrecho] = useState([]);  
-  const [carregando, setCarregando] = useState(false);
-
-  const carregarViagemTrecho = async()=>{
-    try {
-      setCarregando(true);
-    const response = await api.get('/viagens-com-trechos');
-    console.log('Viagens e Trechos', response.data);
-    setViagensTrecho(response.data);  
-    } catch (error) {
-      console.log(error);
-    }finally{
-      setCarregando(false);
-    }
-    
-  }
-
-  useEffect(()=>{
-    carregarViagemTrecho();
-  },[]);
-
+const Inicio = () => { 
+  const { viagensTrechos, carregando, carregarViagemTrecho} = useViagensTrechos();
+  
   return (
     <>
     <div className='container'>      

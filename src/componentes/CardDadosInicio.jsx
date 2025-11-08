@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 import CardInfoViagem from './CardInfoViagem'
 import CardInfoTrecho from './CardInfoTrecho'
 import CardInfoParada from './CardInfoParada'
-import ModalSalvando from './ModalSalvando'
-import CardInfoAbastecimento from './CardInfoAbastecimento'
+import { Car } from "lucide-react"; // ícones bonitos
 
 const CardDadosInicio = ({ viagensTrechos,carregarViagemTrecho, carregando }) => {
   const [viagemSelecionada, setViagemSelecionada] = useState(null)
@@ -51,7 +50,7 @@ const handleTrechoChange = (e) => {
   
   return (
     <>    
-      <h3>Viagens Cadastradas</h3>
+      <h3><Car /> Cadastrar Paradas</h3>
       {/* ---------- SELECT VIAGEM ---------- */}      
       <label>
         Viagem
