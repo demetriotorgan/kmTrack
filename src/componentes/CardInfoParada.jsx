@@ -7,6 +7,7 @@ import api from '../api/api';
 import useExcluirParada from '../hooks/useExcluirParada';
 import { isoToHHMM, hhmmToIso } from '../util/time';
 import { calcularDiferencaHorario } from '../util/calcularDiferencaHorario';
+import useEditarParada from '../hooks/useEditarParada';
 
 const CardInfoParada = ({ trechoSelecionado, carregarViagemTrecho }) => { 
   const horarioLocal = obterHorarioLocal();
@@ -16,87 +17,12 @@ const CardInfoParada = ({ trechoSelecionado, carregarViagemTrecho }) => {
   const [tempoFinalISO, setTempoFinalISO] = useState(''); 
   const [local, setLocal] = useState('');
   const [obs, setObs] = useState('');
-  const [editando, setEditando] = useState(false);
-  const [paradaEditando, setParadaEditando] = useState(null);
-  const [salvandoEdicao, setSalvandoEdicao] = useState(false);
   
   //Hook's
   const {salvarParada, salvando} = useSalvarParada(carregarViagemTrecho);
   const {excluirParada, deletando} = useExcluirParada(carregarViagemTrecho);
+  const { editando, salvandoEdicao, iniciarEdicao, salvarEdicao} = useEditarParada(carregarViagemTrecho);
 
-  const handleTipoParada = (e)=>{
-    setTipoParada(e.target.value);    
-  }
-  
-  const handleSalvar = async ()=>{
-    await salvarParada(trechoSelecionado._id,tipoParada, tempoInicioISO, tempoFinalISO, local, obs);
-  }
-  
-  const handleEditarParada = (parada)=>{
-    if(!parada) {
-      console.warn('handleEditarParada: parada inválida');
-      return;
-    }
-
-    const dadosEditados = {
-      _id: parada._id,
-      tipo: parada.tipo,
-      tempoDeParada: parada.tempoDeParada,
-      tempoInicialParada: isoToHHMM(parada.tempoInicialParada),
-      tempoFinalParada: isoToHHMM(parada.tempoFinalParada),
-      local:parada.local,
-      observacao: parada.observacao
-    };
-
-    setTipoParada(dadosEditados.tipo);
-    setTempoInicioISO(dadosEditados.tempoInicialParada);
-    setTempoFinalISO(dadosEditados.tempoFinalParada);
-    setLocal(dadosEditados.local);
-    setObs(dadosEditados.observacao);
-
-    //Guardar a parada que está sendo editada
-    setParadaEditando(dadosEditados);
-    setEditando(true);
-
-    console.log('Dados carregados para edição: ', dadosEditados);
-  }
-
-  const handleSalvarEdicao = async()=>{
-    if (!paradaEditando) return;
-
-  const tempoInicialEditado = hhmmToIso(tempoInicioISO);
-  const tempoFinalEditado = hhmmToIso(tempoFinalISO);
-  const tempoDeParada = calcularDiferencaHorario(tempoInicioISO, tempoFinalISO);
-
-    
-    const payloadEditado = {
-      id : paradaEditando._id,
-      tipo: tipoParada,
-      tempoInicialEditado,
-      tempoFinalEditado,
-      tempoDeParada,
-      local,
-      observacao:obs      
-    };
-    // console.log('HHmm: ', paradaEditando.tempoInicialParada);
-    // console.log('ISO convertido: ', hhmmToIso(paradaEditando.tempoInicialParada));
-    console.log('Payload Editado: ', payloadEditado);
-    console.log('Id: ', payloadEditado.id);
-
-    try {      
-      const confirmar = window.confirm('Deseja realmente editar este registro?');
-      if(!confirmar) return;
-      
-      setSalvandoEdicao(true);
-      const response = await api.put(`/editar-parada/${payloadEditado.id}`, payloadEditado);
-      alert('Registro salvado com sucesso');
-      carregarViagemTrecho();
-    } catch (error) {
-      console.log(error);
-    }finally{
-      setSalvandoEdicao(false);
-    }
-  }
   
   if (!trechoSelecionado) return null;
 
@@ -114,7 +40,7 @@ const CardInfoParada = ({ trechoSelecionado, carregarViagemTrecho }) => {
 
         <label>
           Tipo
-          <select value={tipoParada} onChange={handleTipoParada}>
+          <select value={tipoParada} onChange={(e)=>setTipoParada(e.target.value)}>
             <option value='descanso'>Descanso</option>
             <option value='alimentacao'>Alimentação</option>
             <option value='abastecimento'>Abastecimento</option>
@@ -155,7 +81,9 @@ const CardInfoParada = ({ trechoSelecionado, carregarViagemTrecho }) => {
           <textarea value={obs} onChange={(e) => setObs(e.target.value)} />
         </label>
 
-      <button className='botao-principal' onClick={editando ? handleSalvarEdicao : handleSalvar}>{editando ? 'Atualziar' : 'Salvar'}</button>
+      <button className='botao-principal' 
+        onClick={()=> editando ? 
+        salvarEdicao(tipoParada, tempoInicioISO, tempoFinalISO, local, obs) : salvarParada(trechoSelecionado._id,tipoParada, tempoInicioISO, tempoFinalISO, local, obs)}>{editando ? 'Atualziar' : 'Salvar'}</button>
       </div>
 
       {/* lista de paradas (mais recentes primeiro) */}
@@ -169,7 +97,7 @@ const CardInfoParada = ({ trechoSelecionado, carregarViagemTrecho }) => {
             <p><strong>Tempo Gasto:</strong> {parada.tempoDeParada} min</p>
             <p><strong>Obs:</strong> {parada.observacao}</p>
             <div className="lista-parada-botoes">
-              <button onClick={()=>handleEditarParada(parada)}><NotebookPen /></button>
+              <button onClick={()=>iniciarEdicao(parada, setTipoParada, setTempoInicioISO, setTempoFinalISO, setLocal, setObs)}><NotebookPen /></button>
               <button onClick={()=>excluirParada(parada._id)}><Trash /></button>
             </div>
           </div>
