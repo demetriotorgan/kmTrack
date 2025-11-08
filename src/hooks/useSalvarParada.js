@@ -1,59 +1,52 @@
 import { useState } from "react";
 import api from "../api/api";
+import { calcularDiferencaHorario } from "../util/calcularDiferencaHorario";
 
 const useSalvarParada = (carregarViagemTrecho) => {
-  const [salvando, setSalvando] = useState(false);
+  const [salvando, setSalvando] = useState(false);  
 
-  // Função que gera o payload corretamente
-  const gerarPayloadParada = ({ tipoParada, tempoInicio, tempoFinal, local, obs }) => {
-    if (!tempoInicio || !tempoFinal) {
-      throw new Error("Informe os horários de início e término da parada");
+  const salvarParada = async (trechoId, tipoParada, tempoInicioISO, tempoFinalISO, local, obs ) => {
+      if (!tempoInicioISO || !tempoFinalISO) {
+    alert("Preencha os horários de início e término da parada.");
+    return;
+  }
+
+  // Data atual no formato YYYY-MM-DD
+  const hoje = new Date().toISOString().split('T')[0];
+
+  // Cria objetos Date a partir da data + hora
+  const inicioDate = new Date(`${hoje}T${tempoInicioISO}:00`);
+  const finalDate = new Date(`${hoje}T${tempoFinalISO}:00`);
+
+  // Ajuste para caso o horário final seja após a meia-noite
+  if (finalDate < inicioDate) {
+    finalDate.setDate(finalDate.getDate() + 1);
+  }
+
+    const payload = {
+      tipo:tipoParada,
+      tempoInicialParada: inicioDate.toISOString(),
+      tempoFinalParada: finalDate.toISOString(),
+      tempoDeParada: calcularDiferencaHorario(tempoInicioISO,tempoFinalISO),
+      local: local,
+      observacao: obs
+    }
+    // console.log('Payload: ', payload);
+    // console.log('Id do trecho: ', trechoSelecionado._id)
+    const confirmar = window.confirm('Deseja realmente salvar esta parada?')
+    if(!confirmar){
+      return
     }
 
-    const dataInicio = new Date();
-    const dataFim = new Date();
-
-    const [hInicio, mInicio] = tempoInicio.split(":");
-    const [hFim, mFim] = tempoFinal.split(":");
-
-    dataInicio.setHours(hInicio);
-    dataInicio.setMinutes(mInicio);
-    dataInicio.setSeconds(0);
-
-    dataFim.setHours(hFim);
-    dataFim.setMinutes(mFim);
-    dataFim.setSeconds(0);
-
-    // Calcula diferença em minutos
-    const diffMs = dataFim - dataInicio;
-    const diffMin = Math.max(0, Math.floor(diffMs / 60000));
-
-    return {
-      tipo: tipoParada,
-      tempoInicialParada: dataInicio.toISOString(),
-      tempoFinalParada: dataFim.toISOString(),
-      tempoDeParada: diffMin,
-      local: local || "Estrada",
-      observacao: obs || ""
-    };
-  };
-
-  const salvarParada = async (trechoId, dadosParada) => {
     try {
-      const confirmar = window.confirm("Deseja realmente salvar esta parada?");
-      if (!confirmar) return;
-
       setSalvando(true);
-      const payload = gerarPayloadParada(dadosParada);
-      const response = await api.post(`/salvar-parada/${trechoId}`, payload);
-
-      alert("Parada salva com sucesso!");
+      const response = await api.post(`/salvar-parada/${trechoId}`, payload)
+      console.log(response.data);
+      alert('Parada salva com sucesso');
       carregarViagemTrecho();
-      return response.data;
     } catch (error) {
-      console.error("Erro ao salvar parada:", error);
-      alert(error.message || "Erro ao salvar parada.");
-    } finally {
+      console.log(error);
+    }finally{
       setSalvando(false);
     }
   };

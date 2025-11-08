@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import CardInfoViagem from './CardInfoViagem'
 import CardInfoTrecho from './CardInfoTrecho'
 import CardInfoParada from './CardInfoParada'
+import ModalSalvando from './ModalSalvando'
 
-const CardDadosInicio = ({ viagensTrechos,carregarViagemTrecho }) => {
+const CardDadosInicio = ({ viagensTrechos,carregarViagemTrecho, carregando }) => {
   const [viagemSelecionada, setViagemSelecionada] = useState(null)
   const [trechoSelecionado, setTrechoSelecionado] = useState(null)
 
@@ -36,11 +37,21 @@ const handleTrechoChange = (e) => {
       setTrechoSelecionado({ ...trechoAtualizado });
     }
   }, [viagensTrechos]);
+  
+  if (carregando) {
+    return (
+      <div className="loading-container">
+        <p>Carregando dados...</p>
+        {/* Se quiser, pode exibir um spinner aqui */}
+        <div className="spinner"></div>
+      </div>
+    )
+  }
+  
   return (
-    <>
+    <>    
       <h3>Viagens Cadastradas</h3>
-
-      {/* ---------- SELECT VIAGEM ---------- */}
+      {/* ---------- SELECT VIAGEM ---------- */}      
       <label>
         Viagem
         <select onChange={handleViagemChange} defaultValue="">

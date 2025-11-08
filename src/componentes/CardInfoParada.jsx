@@ -1,124 +1,115 @@
 import React, { useState } from 'react'
 import ModalSalvando from './ModalSalvando';
 import useSalvarParada from '../hooks/useSalvarParada';
-import { NotebookPen,Trash } from "lucide-react";
+import { NotebookPen, Trash } from "lucide-react";
+import { obterHorarioLocal } from '../util/horarioLocal';
+import api from '../api/api';
+import useExcluirParada from '../hooks/useExcluirParada';
 
-
-const CardInfoParada = ({trechoSelecionado,carregarViagemTrecho}) => {
-  const dataAtual = new Date();
-const horas = String(dataAtual.getHours()).padStart(2, '0');
-const minutos = String(dataAtual.getMinutes()).padStart(2, '0');
-const horarioLocal = `${horas}:${minutos}`;
-
+const CardInfoParada = ({ trechoSelecionado, carregarViagemTrecho }) => { 
+  const horarioLocal = obterHorarioLocal();
+  
   const [tipoParada, setTipoParada] = useState('descanso');
-  const [tempoInicio, setTempoInicio] = useState(horarioLocal);
-  const [tempoFinal, setTempoFinal] = useState('');
+  const [tempoInicioISO, setTempoInicioISO] = useState(horarioLocal); 
+  const [tempoFinalISO, setTempoFinalISO] = useState(''); 
   const [local, setLocal] = useState('');
   const [obs, setObs] = useState('');
   
+  //Hook's
   const {salvarParada, salvando} = useSalvarParada(carregarViagemTrecho);
-
-  const handleSalvar = async()=>{
-     if (!trechoSelecionado?._id) return alert("Selecione um trecho primeiro.");
-
-      await salvarParada(trechoSelecionado._id, {
-      tipoParada,
-      tempoInicio,
-      tempoFinal,
-      local,
-      obs,
-    });
-    // Reseta os campos após salvar
-    setTipoParada("descanso");
-    setTempoInicio(horarioLocal);
-    setTempoFinal("");
-    setLocal("");
-    setObs("");
-  }
+  const {excluirParada, deletando} = useExcluirParada(carregarViagemTrecho);
 
   const handleTipoParada = (e)=>{
-    setTipoParada(e.target.value);
+    setTipoParada(e.target.value);    
   }
- 
+  
+  const handleSalvar = async ()=>{
+    await salvarParada(trechoSelecionado._id,tipoParada, tempoInicioISO, tempoFinalISO, local, obs);
+  }
 
-  if(!trechoSelecionado) return null;
+  
+  
+  if (!trechoSelecionado) return null;
 
   return (
     <>
-    <div className='card-info-parada'>
-          <h3>Registrar Parada</h3> 
-          <div className='lista-parada'>
-            <p>Total de Paradas: {trechoSelecionado.paradas.length} </p>
-            <p>Tempo Total: {' '} {trechoSelecionado.paradas
-          .reduce((acc, parada) => acc + (parada.tempoDeParada || 0), 0)}{' '}
-        min </p>            
-          </div>                   
-          <label>
-            Tipo
-            <select onChange={handleTipoParada}>
-              <option value='descanso'>Descanso</option>
-              <option value='alimentacao'>Alimentação</option>
-              <option value='abastecimento'>Abastecimento</option>
-              <option value='pernoite'>Pernoite</option>
-              <option value='atrativo'>Atratativo</option>
-            </select>
-          </label>          
-            <label>
-              Horário Início:
-              <input 
-                type='time' 
-                value={tempoInicio}
-                onChange={(e)=>setTempoInicio(e.target.value)}
-                />
-            </label>
+      <div className='card-info-parada'>
+        <h3>Registrar Parada</h3>
+        <div className='lista-parada'>
+          <p>Total de Paradas: {trechoSelecionado.paradas?.length ?? 0} </p>
+          <p>
+            Tempo Total:{' '}
+            {trechoSelecionado.paradas?.reduce((acc, parada) => acc + (parada.tempoDeParada || 0), 0) ?? 0} min
+          </p>
+        </div>
 
-            <label>
-              Horário Término:
-              <input                 
-                type='time' 
-                value={tempoFinal}
-                onChange={(e)=>setTempoFinal(e.target.value)}
-                />
-            </label>          
+        <label>
+          Tipo
+          <select value={tipoParada} onChange={handleTipoParada}>
+            <option value='descanso'>Descanso</option>
+            <option value='alimentacao'>Alimentação</option>
+            <option value='abastecimento'>Abastecimento</option>
+            <option value='pernoite'>Pernoite</option>
+            <option value='atrativo'>Atrativo</option>
+          </select>
+        </label>
 
-          <label>
-            Local
-            <input 
-              type='text' 
-              value={local}
-              onChange={(e)=>setLocal(e.target.value)}
-              />              
-          </label>
+        <label>
+          Horário Início:
+          <input
+            type='time'
+            value={tempoInicioISO}
+            onChange={(e)=>setTempoInicioISO(e.target.value)}
+          />
+        </label>
 
-          <label>
-            Obs:
-            <textarea
-            value={obs}
-            onChange={(e)=>setObs(e.target.value)}
-            ></textarea>
-          </label>
+        <label>
+          Horário Término:
+          <input
+            type='time'
+            value={tempoFinalISO}          
+            onChange={(e)=>setTempoFinalISO(e.target.value)}
+          />
+        </label>
 
-          <button className='botao-principal' onClick={handleSalvar}>Salvar</button>          
-          </div>
-         {trechoSelecionado.paradas
-          ?.slice()                // cria uma cópia
-          .reverse()               // inverte a ordem
-          .map((parada, index) => (
-            <div className="lista-parada" key={index}>
-              <p><strong>Local:</strong> {parada.local}</p>
-              <p><strong>Tempo Gasto:</strong> {parada.tempoDeParada} min</p>
-              <p><strong>Obs:</strong> {parada.observacao}</p>
-              <div className="lista-parada-botoes">
-                <button><NotebookPen /></button>
-                <button><Trash /></button>
-              </div>
+        <label>
+          Local
+          <input
+            type='text'
+            value={local}
+            onChange={(e) => setLocal(e.target.value)}
+          />
+        </label>
+
+        <label>
+          Obs:
+          <textarea value={obs} onChange={(e) => setObs(e.target.value)} />
+        </label>
+
+      <button className='botao-principal' onClick={handleSalvar}>Salvar</button>
+      </div>
+
+      {/* lista de paradas (mais recentes primeiro) */}
+      {trechoSelecionado.paradas
+        ?.slice()
+        .reverse()
+        .map((parada, index) => (
+          <div className="lista-parada" key={index}>
+            <p><strong>Local:</strong> {parada.local}</p>
+            <p><strong>Tipo:</strong> {parada.tipo}</p>
+            <p><strong>Tempo Gasto:</strong> {parada.tempoDeParada} min</p>
+            <p><strong>Obs:</strong> {parada.observacao}</p>
+            <div className="lista-parada-botoes">
+              <button><NotebookPen /></button>
+              <button onClick={()=>excluirParada(parada._id)}><Trash /></button>
             </div>
-        ))}
-          {salvando && (
-            <ModalSalvando />
-          )}
-      </>
-  )
-}
+          </div>
+        ))} 
+        {salvando || deletando && (
+          <ModalSalvando />
+        )}   
+    </>
+  );
+};
 
-export default CardInfoParada
+export default CardInfoParada;
