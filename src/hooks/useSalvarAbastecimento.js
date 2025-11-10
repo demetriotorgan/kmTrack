@@ -3,7 +3,7 @@ import { useState } from "react";
 import api from "../api/api";
 import { hhmmToIso, dateToIso } from "../util/time";
 
-export default function useSalvarAbastecimento() {
+export default function useSalvarAbastecimento(carregarViagemTrecho) {
   const [salvando, setSalvando] = useState(false);
   const [tipoAbastecimento, setTipoAbastecimento] = useState("inicial");
 
@@ -74,6 +74,7 @@ export default function useSalvarAbastecimento() {
       alert("Abastecimento salvo com sucesso!");
 
       resetarFormulario();
+      carregarViagemTrecho();
 
       if (callbackAtualizar) callbackAtualizar(); // recarrega dados
     } catch (error) {

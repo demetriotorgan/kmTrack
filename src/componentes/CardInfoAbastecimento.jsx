@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import '../styles/CardInfoAbastecimento.css'
 import { Fuel,Pencil,Trash2,Pin } from "lucide-react"; // ícones bonitos
 import api from '../api/api'
-import { hhmmToIso, dateToIso } from '../util/time';
+import { hhmmToIso, dateToIso,isoToHHMM,isoToDate } from '../util/time';
 import useSalvarAbastecimento from '../hooks/useSalvarAbastecimento';
 
 const CardInfoAbastecimento = ({viagensTrechos, carregarViagemTrecho, carregando}) => {
     const [viagemSelecionada, setViagemSelecionada] = useState(null);
     const [trechoSelecionado, setTrechoSelecionado] = useState(null);
+    
     
     //hook
 const {
@@ -17,7 +18,7 @@ const {
   setTipoAbastecimento,
   handleChange,
   handleSalvar
-} = useSalvarAbastecimento();
+} = useSalvarAbastecimento(carregarViagemTrecho);
    
 
 const handleViagemChange = (e)=>{
@@ -35,6 +36,19 @@ const handleViagemChange = (e)=>{
   setTrechoSelecionado(trecho ? { ...trecho } : null)
   }
 
+  // 🔥 useEffect para manter trechoSelecionado atualizado quando viagensTrechos mudar
+    useEffect(() => {
+      if (!trechoSelecionado || !viagemSelecionada) return;
+  
+      const viagemAtualizada = viagensTrechos.find(v => v._id === viagemSelecionada._id);
+      if (!viagemAtualizada) return;
+  
+      const trechoAtualizado = viagemAtualizada.trechos.find(t => t._id === trechoSelecionado._id);
+      if (trechoAtualizado) {
+        setTrechoSelecionado({ ...trechoAtualizado });
+      }
+    }, [viagensTrechos]);
+  
   return (
     <div>        
         <label>
@@ -142,24 +156,30 @@ const handleViagemChange = (e)=>{
         onClick={() => handleSalvar(trechoSelecionado._id, carregarViagemTrecho)}
         disabled={salvando}><Pin />  {salvando ? "Salvando..." : "Salvar"}</button>
 
-        {trechoSelecionado.abastecimentos.length > 0 ? 
-        <div className='card-abastecimento'>
-          <h4><Fuel /> Abastecimento</h4>
-          <p>Odometro</p>
-          <p>Litros</p>
-          <p>Valor</p>
-          <p>Preço por Litro</p>
-          <p>Cidade</p>
-          <p>Data</p>
-          <p>Hora</p>
-          <p>Tipo</p>
-          <div className="painel-botoes">
-            <button><Pencil /></button>
-            <button><Trash2 /></button>
-          </div>
-        </div>  
-        :''
-        }
+        {trechoSelecionado.abastecimentos.length > 0 ?
+  trechoSelecionado.abastecimentos
+    .slice()        // cria uma cópia
+    .reverse()      // inverte a ordem
+    .map((abastecimento, index) => (
+      <div className='card-abastecimento' key={index}>
+        <h4><Fuel /> Abastecimento</h4>
+        <p>Cidade: {abastecimento.cidade}</p>
+        <p>Litros: {abastecimento.litros}</p>
+        <p>Valor: R$ {abastecimento.valorTotal}</p>
+        <p>Preço por Litro: {abastecimento.precoPorLitro}</p>
+        <p>Data: {isoToDate(abastecimento.data)}</p>
+        <p>Hora: {isoToHHMM(abastecimento.hora)}h</p>
+        <p>Tipo: {abastecimento.tipo}</p>
+        <p>Odometro: {abastecimento.odometro}</p>
+        <div className="painel-botoes">
+          <button><Pencil /></button>
+          <button><Trash2 /></button>
+        </div>
+      </div>
+    ))
+  : ''
+}
+
       </div> : ''
     }     
     </div>
