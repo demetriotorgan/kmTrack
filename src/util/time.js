@@ -24,3 +24,16 @@ export function hhmmToIso(hhmm, isoBase = null) {
 
   return base.toISOString();
 }
+
+// converte "YYYY-MM-DD" → ISO (UTC) com hora zero
+export function dateToIso(dateStr) {
+  if (!dateStr) return null;
+
+  // Garantindo que o formato esteja correto
+  const [yyyy, mm, dd] = dateStr.split('-').map(Number);
+
+  // Criando sempre como UTC
+  const date = new Date(Date.UTC(yyyy, mm - 1, dd, 0, 0, 0, 0));
+
+  return date.toISOString();
+}

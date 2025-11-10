@@ -1,13 +1,26 @@
 import React, { useState } from 'react'
 import '../styles/CardInfoAbastecimento.css'
 import { Fuel,Pencil,Trash2,Pin } from "lucide-react"; // ícones bonitos
+import api from '../api/api'
+import { hhmmToIso, dateToIso } from '../util/time';
+import useSalvarAbastecimento from '../hooks/useSalvarAbastecimento';
 
 const CardInfoAbastecimento = ({viagensTrechos, carregarViagemTrecho, carregando}) => {
     const [viagemSelecionada, setViagemSelecionada] = useState(null);
     const [trechoSelecionado, setTrechoSelecionado] = useState(null);
-    const [tipoAbastecimento, setTipoAbastecimento] = useState(null);
+    
+    //hook
+const {
+  salvando,
+  novoAbastecimento,
+  tipoAbastecimento,
+  setTipoAbastecimento,
+  handleChange,
+  handleSalvar
+} = useSalvarAbastecimento();
+   
 
-    const handleViagemChange = (e)=>{
+const handleViagemChange = (e)=>{
       const index = e.target.value
       const viagem = viagensTrechos[index]
       setViagemSelecionada(viagem)
@@ -20,8 +33,7 @@ const CardInfoAbastecimento = ({viagensTrechos, carregarViagemTrecho, carregando
 
   const trecho = viagemSelecionada.trechos.find(t => String(t._id) === String(trechoId))
   setTrechoSelecionado(trecho ? { ...trecho } : null)
-    }
-
+  }
 
   return (
     <div>        
@@ -64,41 +76,71 @@ const CardInfoAbastecimento = ({viagensTrechos, carregarViagemTrecho, carregando
         <h4>Novo Abastecimento</h4>
         <label>
           Odometro
-          <input type='number' />
+          <input type='number' 
+          name="odometro"
+          value={novoAbastecimento.odometro}
+          onChange={handleChange}
+          />
         </label>
         <label>
           Litros
-          <input type='number' />
+          <input type='number' 
+          name='litros'
+          value={novoAbastecimento.litros}
+          onChange={handleChange}
+          />
         </label>
         <label>
           Valor Total
-          <input type='number' />
+          <input type='number' 
+          name='valor_total'
+          value={novoAbastecimento.valor_total}
+          onChange={handleChange}
+          />
         </label>
         <label>
           Preço por Litro
-          <input type='number' />
+          <input type='number' 
+          name='preco_litro'
+          value={novoAbastecimento.preco_litro}
+          onChange={handleChange}
+          />
         </label>
         <label>
           Cidade
-          <input type='text' />
+          <input type='text' 
+          name='cidade'
+          value={novoAbastecimento.cidade}
+          onChange={handleChange}
+          />
         </label>
         <label>
           Data
-          <input type='date' />
+          <input type='date' 
+          name='data'
+          value={novoAbastecimento.data}
+          onChange={handleChange}
+          />
         </label>
         <label>
           Hora
-          <input type='time' />
+          <input type='time' 
+          name='hora'
+          value={novoAbastecimento.hora}
+          onChange={handleChange}
+          />
         </label>
         <label>
           Tipo
-          <select onChange={(e)=>setTipoAbastecimento(e.target.value)}>
+          <select onChange={(e)=>setTipoAbastecimento(e.target.value)}>            
             <option value='inicial'>Inicial</option>
             <option value='reposicao'>Reposição</option>
             <option value='final'>Final</option>
           </select>
         </label>
-        <button className='botao-principal'><Pin /> Salvar</button>
+        <button className='botao-principal'  
+        onClick={() => handleSalvar(trechoSelecionado._id, carregarViagemTrecho)}
+        disabled={salvando}><Pin />  {salvando ? "Salvando..." : "Salvar"}</button>
 
         {trechoSelecionado.abastecimentos.length > 0 ? 
         <div className='card-abastecimento'>
@@ -119,8 +161,7 @@ const CardInfoAbastecimento = ({viagensTrechos, carregarViagemTrecho, carregando
         :''
         }
       </div> : ''
-    }
-      
+    }     
     </div>
   )
 }
