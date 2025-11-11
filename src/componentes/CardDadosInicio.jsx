@@ -3,6 +3,7 @@ import CardInfoViagem from './CardInfoViagem'
 import CardInfoTrecho from './CardInfoTrecho'
 import CardInfoParada from './CardInfoParada'
 import { Car } from "lucide-react"; // ícones bonitos
+import ModalCarregandoDados from './ModalCarregandoDados';
 
 const CardDadosInicio = ({ viagensTrechos,carregarViagemTrecho, carregando }) => {
   const [viagemSelecionada, setViagemSelecionada] = useState(null)
@@ -40,11 +41,7 @@ const handleTrechoChange = (e) => {
   
   if (carregando) {
     return (
-      <div className="loading-container">
-        <p>Carregando dados...</p>
-        {/* Se quiser, pode exibir um spinner aqui */}
-        <div className="spinner"></div>
-      </div>
+      <ModalCarregandoDados />
     )
   }
   

@@ -7,6 +7,7 @@ import useSalvarAbastecimento from '../hooks/useSalvarAbastecimento';
 import ModalSalvando from './ModalSalvando';
 import useExcluirAbastecimento from '../hooks/useExcluirAbastecimento';
 import useEditarAbastecimento from '../hooks/useEditarAbastecimento';
+import ModalCarregandoDados from './ModalCarregandoDados';
 
 const CardInfoAbastecimento = ({viagensTrechos, carregarViagemTrecho, carregando}) => {
     const [viagemSelecionada, setViagemSelecionada] = useState(null);
@@ -46,7 +47,11 @@ const handleViagemChange = (e)=>{
         setTrechoSelecionado({ ...trechoAtualizado });
       }
     }, [viagensTrechos]);
-
+if(carregando){
+  return(
+    <ModalCarregandoDados />
+  )
+}
           
   return (
     <div>       
