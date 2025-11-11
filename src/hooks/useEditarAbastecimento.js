@@ -5,6 +5,7 @@ import { hhmmToIso, dateToIso, isoToHHMM, isoToDateEdit } from "../util/time";
 export default function useEditarAbastecimento(setNovoAbastecimento, formRef) {
   const [editando, setEditando] = useState(false);
   const [abastecimentoId, setAbastecimentoId] = useState("");
+  const [editandoAwait, setEditandoAwait] = useState(false);
 
   // -----------------------------------------
   // ✅ Preencher formulário para edição
@@ -50,16 +51,15 @@ export default function useEditarAbastecimento(setNovoAbastecimento, formRef) {
   // -----------------------------------------
   // ✅ Enviar PUT — Editar abastecimento
   // -----------------------------------------
-  const salvarEdicao = async (
-    trechoId,
-    novoAbastecimento,
-    tipoAbastecimento,
-    carregarViagemTrecho
-  ) => {
+  const salvarEdicao = async (trechoId, novoAbastecimento, tipoAbastecimento, carregarViagemTrecho) => {
+
+    setEditandoAwait(true);
+    
     const confirmar = window.confirm("Deseja realmente alterar este abastecimento?");
     if (!confirmar) return;
 
     try {
+      setEditandoAwait(true);
       const payload = criarPayload(novoAbastecimento, tipoAbastecimento);
 
       const response = await api.put(
@@ -86,6 +86,8 @@ export default function useEditarAbastecimento(setNovoAbastecimento, formRef) {
     } catch (error) {
       console.error(error);
       alert("Erro ao editar abastecimento");
+    }finally{
+      setEditandoAwait(false);
     }
   };
 
@@ -93,5 +95,6 @@ export default function useEditarAbastecimento(setNovoAbastecimento, formRef) {
     editando,
     iniciarEdicao,
     salvarEdicao,
+    editandoAwait,
   };
 }

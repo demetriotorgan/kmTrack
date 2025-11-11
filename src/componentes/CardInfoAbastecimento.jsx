@@ -17,7 +17,7 @@ const CardInfoAbastecimento = ({viagensTrechos, carregarViagemTrecho, carregando
     //hook
 const {salvando, novoAbastecimento, tipoAbastecimento, setTipoAbastecimento, handleChange, handleSalvar,setNovoAbastecimento} = useSalvarAbastecimento(carregarViagemTrecho);   
 const { excluindo, excluirAbastecimento } = useExcluirAbastecimento(carregarViagemTrecho);
-const {editando, iniciarEdicao, salvarEdicao} = useEditarAbastecimento(setNovoAbastecimento, formRef);
+const {editando, iniciarEdicao, salvarEdicao,editandoAwait} = useEditarAbastecimento(setNovoAbastecimento, formRef);
 
 
 const handleViagemChange = (e)=>{
@@ -55,7 +55,7 @@ if(carregando){
           
   return (
     <div>       
-      {(excluindo || salvando) && <ModalSalvando />}
+      {(excluindo || salvando || editandoAwait) && <ModalSalvando />}
         <label>
           Viagem
           <select 
