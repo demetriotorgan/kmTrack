@@ -5,14 +5,16 @@ import api from '../api/api'
 import { hhmmToIso, dateToIso,isoToHHMM,isoToDate } from '../util/time';
 import useSalvarAbastecimento from '../hooks/useSalvarAbastecimento';
 import ModalSalvando from './ModalSalvando';
+import useExcluirAbastecimento from '../hooks/useExcluirAbastecimento';
 
 const CardInfoAbastecimento = ({viagensTrechos, carregarViagemTrecho, carregando}) => {
     const [viagemSelecionada, setViagemSelecionada] = useState(null);
     const [trechoSelecionado, setTrechoSelecionado] = useState(null);    
-    const [excluindo, setExcluindo] = useState(false);
-    
+       
     //hook
 const {salvando, novoAbastecimento, tipoAbastecimento, setTipoAbastecimento, handleChange, handleSalvar} = useSalvarAbastecimento(carregarViagemTrecho);   
+const { excluindo, excluirAbastecimento } = useExcluirAbastecimento(carregarViagemTrecho);
+
 
 const handleViagemChange = (e)=>{
       const index = e.target.value
@@ -42,31 +44,10 @@ const handleViagemChange = (e)=>{
       }
     }, [viagensTrechos]);
 
-    const handleExcluir = async(id)=>{
-      console.log('Trecho id: ', trechoSelecionado._id);
-      console.log('Abast. id: ', id);
-
-      try {
-        const confirmar = window.confirm('Deseja excluir este abastecimento?');
-        if(!confirmar) return
-
-        setExcluindo(true)
-        const response = await api.delete(`/excluir-abastecimento/${trechoSelecionado._id}/${id}`);
-        console.log(response.data);
-        alert('Registro excluido com sucesso');
-        carregarViagemTrecho();
-      } catch (error) {
-        console.log(error);
-      }finally{
-        setExcluindo(false);
-      }
-    }
-  
+      
   return (
     <div>       
-      {excluindo || salvando && (
-        <ModalSalvando />
-      )} 
+      {(excluindo || salvando) && <ModalSalvando />}
         <label>
           Viagem
           <select 
@@ -190,7 +171,7 @@ const handleViagemChange = (e)=>{
         <p>Odometro: {abastecimento.odometro}</p>
         <div className="painel-botoes">
           <button><Pencil /></button>
-          <button onClick={()=>handleExcluir(abastecimento._id)}><Trash2 /></button>
+          <button onClick={()=>excluirAbastecimento(trechoSelecionado._id, abastecimento._id)}><Trash2 /></button>
         </div>
       </div>
     ))
