@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import '../styles/CardInfoAbastecimento.css'
 import { Fuel,Pencil,Trash2,Pin } from "lucide-react"; // ícones bonitos
 import api from '../api/api'
-import { hhmmToIso, dateToIso,isoToHHMM,isoToDate } from '../util/time';
+import { hhmmToIso, dateToIso,isoToHHMM,isoToDate,isoToDateEdit } from '../util/time';
 import useSalvarAbastecimento from '../hooks/useSalvarAbastecimento';
 import ModalSalvando from './ModalSalvando';
 import useExcluirAbastecimento from '../hooks/useExcluirAbastecimento';
@@ -10,9 +10,12 @@ import useExcluirAbastecimento from '../hooks/useExcluirAbastecimento';
 const CardInfoAbastecimento = ({viagensTrechos, carregarViagemTrecho, carregando}) => {
     const [viagemSelecionada, setViagemSelecionada] = useState(null);
     const [trechoSelecionado, setTrechoSelecionado] = useState(null);    
+    const [editando, setEditando] = useState(false);
+    const [abastecimentoId, setAbastecimentoId] = useState('');
+    const formRef = useRef(null);
        
     //hook
-const {salvando, novoAbastecimento, tipoAbastecimento, setTipoAbastecimento, handleChange, handleSalvar} = useSalvarAbastecimento(carregarViagemTrecho);   
+const {salvando, novoAbastecimento, tipoAbastecimento, setTipoAbastecimento, handleChange, handleSalvar,setNovoAbastecimento} = useSalvarAbastecimento(carregarViagemTrecho);   
 const { excluindo, excluirAbastecimento } = useExcluirAbastecimento(carregarViagemTrecho);
 
 
@@ -43,6 +46,59 @@ const handleViagemChange = (e)=>{
         setTrechoSelecionado({ ...trechoAtualizado });
       }
     }, [viagensTrechos]);
+
+    const criarPayload = ()=>{
+      return{          
+        odometro: novoAbastecimento.odometro,
+        litros: novoAbastecimento.litros,
+        valorTotal: novoAbastecimento.valor_total,
+        precoPorLitro: novoAbastecimento.preco_litro,
+        cidade: novoAbastecimento.cidade,
+        data: dateToIso(novoAbastecimento.data),
+        hora: hhmmToIso(novoAbastecimento.hora),
+        tipo: tipoAbastecimento
+      }
+    }
+
+    const handleEditar = async(abastecimento)=>{          
+      setEditando(true);
+      // console.log(abastecimento)
+      setNovoAbastecimento({
+      odometro: abastecimento.odometro || "",
+      litros: abastecimento.litros || "",
+      valor_total: abastecimento.valorTotal || "",
+      preco_litro: abastecimento.precoPorLitro || "",
+      cidade: abastecimento.cidade ||"",
+      data: isoToDateEdit(abastecimento.data ||""),
+      hora: isoToHHMM(abastecimento.hora ||""),
+      tipo: abastecimento.tipo ||"",
+    });
+    setAbastecimentoId(abastecimento._id);
+    setTimeout(() => {
+  formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+}, 50);
+    }
+
+    const handleSavarEdicao = async()=>{
+      console.log('PayLoad: ', criarPayload());
+      console.log('Abastecimento ID: ', abastecimentoId);
+      console.log('Trecho ID: ', trechoSelecionado._id );
+
+      const confirmar = window.confirm('Deseja realmente alterar este abastecimento?');
+      if(!confirmar) return;
+
+      try {
+        console.log('Payload: ', criarPayload());
+        console.log('Abastecimento id: ', abastecimentoId);
+        console.log('Trecho ID: ', trechoSelecionado._id);
+      const response = await  api.put(`/editar-abastecimento/${trechoSelecionado._id}/${abastecimentoId}`, criarPayload());
+      console.log(response.data);
+      alert('Abastecimento editado com sucesso');
+      carregarViagemTrecho();
+      } catch (error) {
+        console.log(error);
+      }
+    }
 
       
   return (
@@ -84,7 +140,7 @@ const handleViagemChange = (e)=>{
       </label>
 
       {trechoSelecionado ? 
-      <div className='container-abastecimento'>
+      <div className='container-abastecimento' ref={formRef}>
         <h4>Novo Abastecimento</h4>
         <label>
           Odometro
@@ -151,8 +207,8 @@ const handleViagemChange = (e)=>{
           </select>
         </label>
         <button className='botao-principal'  
-        onClick={() => handleSalvar(trechoSelecionado._id, carregarViagemTrecho)}
-        disabled={salvando}><Pin />  {salvando ? "Salvando..." : "Salvar"}</button>
+        onClick={editando ? ()=>handleSavarEdicao() : () => handleSalvar(trechoSelecionado._id, carregarViagemTrecho)}
+        disabled={salvando}><Pin />  {editando ? "Atualizar" : "Salvar"}</button>
 
         {trechoSelecionado.abastecimentos.length > 0 ?
   trechoSelecionado.abastecimentos
@@ -170,7 +226,7 @@ const handleViagemChange = (e)=>{
         <p>Tipo: {abastecimento.tipo}</p>
         <p>Odometro: {abastecimento.odometro}</p>
         <div className="painel-botoes">
-          <button><Pencil /></button>
+          <button onClick={()=>handleEditar(abastecimento)}><Pencil /></button>
           <button onClick={()=>excluirAbastecimento(trechoSelecionado._id, abastecimento._id)}><Trash2 /></button>
         </div>
       </div>

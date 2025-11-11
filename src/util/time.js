@@ -50,3 +50,15 @@ export function isoToDate(iso) {
 
   return `${dd}/${mm}/${yyyy}`;
 }
+
+export function isoToDateEdit(iso) {
+  if (!iso) return '';
+
+  const d = new Date(iso);
+
+  const dd = String(d.getUTCDate()).padStart(2, '0');
+  const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const yyyy = d.getUTCFullYear();
+
+  return `${yyyy}-${mm}-${dd}`;
+}

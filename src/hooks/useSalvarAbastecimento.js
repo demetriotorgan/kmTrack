@@ -92,5 +92,6 @@ export default function useSalvarAbastecimento(carregarViagemTrecho) {
     setTipoAbastecimento,
     handleChange,
     handleSalvar,
+    setNovoAbastecimento
   };
 }
