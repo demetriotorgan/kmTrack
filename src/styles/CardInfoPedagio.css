@@ -1,0 +1,39 @@
+.card-pedagio {
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin: 0.75rem 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.25s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* Efeito hover suave */
+.card-pedagio:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-accent);
+  box-shadow: 0 4px 16px rgba(255, 204, 0, 0.2);
+}
+
+/* Título ou destaque */
+.card-pedagio p:first-child {
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* Valor com destaque visual */
+.card-pedagio p:nth-child(2) {
+  font-size: 1.1rem;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+/* Data com tom mais suave */
+.card-pedagio p:last-child {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
