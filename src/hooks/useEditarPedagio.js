@@ -7,7 +7,7 @@ const [editando, setEditando] = useState(false);
 const [pedagioId, setPedagioId] = useState('');
 const [salvandoEdicao, setSalvandoEdicao] = useState(false);
 
-const handleEditar = (pedagio)=>{
+const handleEditar = (pedagio,formRef)=>{
     setEditando(true);
     setNovoPedagio({
         valor: pedagio.valor,
@@ -15,6 +15,10 @@ const handleEditar = (pedagio)=>{
         data: isoToDateEdit(pedagio.data)        
     });        
     setPedagioId(pedagio._id);
+    // 🔥 Scroll para o formulário
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
 }
     const editarPedagio = async(trechoId)=>{
         const confirmar = window.confirm('Deseja editar este registro?');

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ModalSalvando from './ModalSalvando'
 import { dateToIso, isoToDate, isoToDateEdit } from '../util/time';
 import '../styles/CardInfoPedagio.css'
@@ -16,6 +16,7 @@ const CardInfoPedagios = ({viagensTrechos, carregando, carregarViagemTrecho}) =>
         local: "",
         data: ""
     });
+    const formRef = useRef(null);
 
 
 const { salvarPedagio, salvando } = useSalvarPedagio(setNovoPedagio,carregarViagemTrecho);   
@@ -107,7 +108,7 @@ const handleTrechoChange = (e)=>{
 
       {trechoSelecionado ? 
       <>
-      <h3>Novo Pedágio</h3>
+      <h3 ref={formRef}>Novo Pedágio</h3>
       <label>
         Local
         <input 
@@ -151,7 +152,7 @@ const handleTrechoChange = (e)=>{
       <h3>Valor: R${pedagio.valor}</h3>
       <p>Data: {isoToDate(pedagio.data)}</p>
       <div className='painel-botoes'>
-        <button><Pencil onClick={()=>handleEditar(pedagio)}/></button>
+        <button><Pencil onClick={()=>handleEditar(pedagio,formRef)}/></button>
           <button onClick={()=>excluirPedagio(trechoSelecionado._id,pedagio._id)}><Trash2 /></button>
       </div>
     </div>
