@@ -10,7 +10,6 @@ import Trecho from './componentes/Trecho.jsx';
 import Estatisticas from './componentes/Estatisticas.jsx';
 import Abastecimentos from './componentes/Abastecimentos.jsx';
 import Pedagios from './componentes/Pedagios.jsx';
-import Atrasos from './componentes/Atrasos.jsx';
 
 const router = createBrowserRouter([
   {
@@ -22,8 +21,7 @@ const router = createBrowserRouter([
       {path: '/trecho', element: <Trecho />},
       {path: '/estatisticas', element: <Estatisticas/>},
       {path: '/abastecimentos', element: <Abastecimentos/>},
-      {path: '/pedagios', element: <Pedagios />},
-      {path: '/atrasos', element: <Atrasos />},
+      {path: '/pedagios', element: <Pedagios />},      
     ],
   },
 ]);

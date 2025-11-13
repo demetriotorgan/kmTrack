@@ -12,7 +12,7 @@ const Menu = () => {
         {icon: <Car size={40} />, label:'Paradas', path:'/'},                
         {icon: <Fuel  size={40} />, label:'Posto', path:'/abastecimentos'},
         {icon: <HandCoins size={40} />, label:'Pedagios', path:'/pedagios'},
-        {icon: <ChartArea  size={40} />, label:'Métricas', path:'/atrasos'},
+        {icon: <ChartArea  size={40} />, label:'Métricas', path:'/estatisticas'},
     ];
 
   return (

@@ -13,7 +13,7 @@ export default function useViagensTrechos(autoLoad = true) {
     try {
       setCarregando(true);
       const response = await api.get("/viagens-com-trechos");
-      console.log("✅ Viagens e Trechos:", response.data);
+      //console.log("✅ Viagens e Trechos:", response.data);
       setViagensTrecho(response.data);
     } catch (error) {
       console.error("❌ Erro ao carregar viagens/trechos:", error);
