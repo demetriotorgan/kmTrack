@@ -5,6 +5,8 @@ import { dateToIso, isoToDate } from '../util/time';
 import '../styles/CardInfoPedagio.css'
 import { Fuel,Pencil,Trash2,Pin } from "lucide-react"; // ícones bonitos
 import useSalvarPedagio from '../hooks/useSalvarPedagio';
+import useExcluirPedagio from '../hooks/useExcluirPedagio';
+import ModalCarregandoDados from './ModalCarregandoDados'
 
 const CardInfoPedagios = ({viagensTrechos, carregando, carregarViagemTrecho}) => {
     const [viagemSelecionada,setViagemSelecionada] = useState('');
@@ -13,9 +15,10 @@ const CardInfoPedagios = ({viagensTrechos, carregando, carregarViagemTrecho}) =>
         valor: "",
         local: "",
         data: ""
-    });
+    });    
 
-const { salvarPedagio, salvando } = useSalvarPedagio();   
+const { salvarPedagio, salvando } = useSalvarPedagio(setNovoPedagio,carregarViagemTrecho);   
+const { excluirPedagio, excluindo } = useExcluirPedagio(carregarViagemTrecho);
 
 const handleChange = (e)=>{
         const {name, value} = e.target;
@@ -54,28 +57,16 @@ const handleTrechoChange = (e)=>{
           }
         }, [viagensTrechos]);
 
-const handleSalvar = async () => {
-    if (!trechoSelecionado?._id) {
-      alert("Selecione um trecho antes de salvar.");
-      return;
-    }
-
-    const sucesso = await salvarPedagio(
-      trechoSelecionado._id,
-      novoPedagio,
-      carregarViagemTrecho
-    );
-
-    if (sucesso) {
-      setNovoPedagio({ valor: "", local: "", data: "" });
-    }
-  };
-
   return (
     <div>
-        {salvando && (
+        {(salvando || excluindo) && (
             <ModalSalvando />
-        )}        
+        )}   
+        {carregando && (
+            <ModalCarregandoDados />
+        )} 
+        {!carregando && (
+        <>
         <label>
             Viagem
             <select
@@ -142,7 +133,7 @@ const handleSalvar = async () => {
             onChange={handleChange}
         />
         </label>
-        <button className='botao-principal' onClick={handleSalvar}>Salvar</button>
+        <button className='botao-principal' onClick={()=> salvarPedagio(trechoSelecionado._id, novoPedagio,)}>Salvar</button>
       </>:''}
 
      {trechoSelecionado?.pedagios?.length > 0 ? 
@@ -156,14 +147,15 @@ const handleSalvar = async () => {
       <p>Data: {isoToDate(pedagio.data)}</p>
       <div className='painel-botoes'>
         <button><Pencil /></button>
-          <button><Trash2 /></button>
+          <button onClick={()=>excluirPedagio(trechoSelecionado._id,pedagio._id)}><Trash2 /></button>
       </div>
     </div>
   ))
  : 
   <p>Nenhum pedágio registrado neste trecho.</p>
 }
-
+</>    
+)}
     </div>
   )
 }

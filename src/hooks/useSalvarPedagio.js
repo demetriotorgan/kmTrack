@@ -2,10 +2,15 @@ import { useState } from "react";
 import api from "../api/api";
 import { dateToIso } from "../util/time";
 
-export default function useSalvarPedagio() {
+export default function useSalvarPedagio(setNovoPedagio,carregarViagemTrecho) {
   const [salvando, setSalvando] = useState(false);
 
-  const salvarPedagio = async (trechoId, novoPedagio, carregarViagemTrecho) => {
+  const salvarPedagio = async (trechoId, novoPedagio) => {
+    if (!trechoId) {
+      alert("Selecione um trecho antes de salvar.");
+      return;
+    }
+
     const payload = {
       valor: novoPedagio.valor || "",
       local: novoPedagio.local || "",
@@ -28,6 +33,7 @@ export default function useSalvarPedagio() {
       // Atualiza lista de viagens e trechos
       if (typeof carregarViagemTrecho === "function") {
         carregarViagemTrecho();
+         setNovoPedagio({ valor: "", local: "", data: "" });
       }
 
       return true; // sucesso
