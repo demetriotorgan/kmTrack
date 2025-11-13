@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import api from '../api/api';
 import ModalSalvando from './ModalSalvando'
-import { dateToIso, isoToDate } from '../util/time';
+import { dateToIso, isoToDate, isoToDateEdit } from '../util/time';
 import '../styles/CardInfoPedagio.css'
 import { Fuel,Pencil,Trash2,Pin } from "lucide-react"; // ícones bonitos
 import useSalvarPedagio from '../hooks/useSalvarPedagio';
 import useExcluirPedagio from '../hooks/useExcluirPedagio';
-import ModalCarregandoDados from './ModalCarregandoDados'
+import ModalCarregandoDados from './ModalCarregandoDados';
+import useEditarPedagio from '../hooks/useEditarPedagio';
 
 const CardInfoPedagios = ({viagensTrechos, carregando, carregarViagemTrecho}) => {
     const [viagemSelecionada,setViagemSelecionada] = useState('');
@@ -15,10 +15,12 @@ const CardInfoPedagios = ({viagensTrechos, carregando, carregarViagemTrecho}) =>
         valor: "",
         local: "",
         data: ""
-    });    
+    });
+
 
 const { salvarPedagio, salvando } = useSalvarPedagio(setNovoPedagio,carregarViagemTrecho);   
 const { excluirPedagio, excluindo } = useExcluirPedagio(carregarViagemTrecho);
+const { handleEditar, editarPedagio, editando, salvandoEdicao} = useEditarPedagio({carregarViagemTrecho, novoPedagio, setNovoPedagio});
 
 const handleChange = (e)=>{
         const {name, value} = e.target;
@@ -59,7 +61,7 @@ const handleTrechoChange = (e)=>{
 
   return (
     <div>
-        {(salvando || excluindo) && (
+        {(salvando || excluindo || salvandoEdicao) && (
             <ModalSalvando />
         )}   
         {carregando && (
@@ -71,7 +73,7 @@ const handleTrechoChange = (e)=>{
             Viagem
             <select
             onChange={handleViagemChange}
-            defaultValue="">
+            defaultValue="">;
                 <option value="">Selecione uma viagem</option>
                 {viagensTrechos.map((viagem, index)=>(
                     <option key={viagem._id} value={index}>{viagem.nome}</option>
@@ -133,7 +135,10 @@ const handleTrechoChange = (e)=>{
             onChange={handleChange}
         />
         </label>
-        <button className='botao-principal' onClick={()=> salvarPedagio(trechoSelecionado._id, novoPedagio,)}>Salvar</button>
+        <button className='botao-principal' 
+        onClick={editando ? ()=>editarPedagio(trechoSelecionado._id) : ()=> salvarPedagio(trechoSelecionado._id, novoPedagio,)}>
+            {editando ? 'Atualizar' : 'Salvar'}
+        </button>
       </>:''}
 
      {trechoSelecionado?.pedagios?.length > 0 ? 
@@ -146,7 +151,7 @@ const handleTrechoChange = (e)=>{
       <h3>Valor: R${pedagio.valor}</h3>
       <p>Data: {isoToDate(pedagio.data)}</p>
       <div className='painel-botoes'>
-        <button><Pencil /></button>
+        <button><Pencil onClick={()=>handleEditar(pedagio)}/></button>
           <button onClick={()=>excluirPedagio(trechoSelecionado._id,pedagio._id)}><Trash2 /></button>
       </div>
     </div>
