@@ -1,5 +1,5 @@
 import React from 'react'
-import { Car, Map, MapPinCheckInside, ChartNoAxesCombined, Fuel, HandCoins,History } from "lucide-react"; // ícones bonitos
+import { Car, Map, MapPinCheckInside, ChartArea, Fuel, HandCoins} from "lucide-react"; // ícones bonitos
 import '../styles/Menu.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,7 +12,7 @@ const Menu = () => {
         {icon: <Car size={40} />, label:'Paradas', path:'/'},                
         {icon: <Fuel  size={40} />, label:'Posto', path:'/abastecimentos'},
         {icon: <HandCoins size={40} />, label:'Pedagios', path:'/pedagios'},
-        {icon: <History size={40} />, label:'Atrasos', path:'/atrasos'},
+        {icon: <ChartArea  size={40} />, label:'Métricas', path:'/atrasos'},
     ];
 
   return (
